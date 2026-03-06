@@ -1,11 +1,3 @@
-# Open Food Facts - eStore Extension Prototype
-
-Currently only works with [Metro](metro.ca)
-
-## Screenshots
-
-%% Will be added on github %%
-
 ## Prototype working
 
 When visiting a product page on [Metro](metro.ca), the extension:
