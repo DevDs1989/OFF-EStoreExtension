@@ -1,0 +1,159 @@
+/* Card */
+.off-badge {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  width: 460px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  margin: 16px 0;
+}
+
+/* ── Green header ── */
+.off-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: #2d7d46;
+}
+
+.off-logo-img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+}
+.off-logo-open {
+  font-weight: 400;
+}
+.off-logo-food {
+  background: #f5a623;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin: 0 4px;
+}
+.off-logo-facts {
+  font-weight: 400;
+}
+
+/* ── Nutrient bars ── */
+.off-nutrients {
+  padding: 16px 24px 8px;
+  background: #fff;
+}
+.off-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.off-row-label {
+  width: 80px;
+  font-size: 15px;
+  color: #222;
+  flex-shrink: 0;
+}
+.off-track {
+  flex: 1;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.off-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+.off-level {
+  width: 56px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.off-level-low {
+  color: #2ecc71;
+}
+.off-level-medium {
+  color: #f39c12;
+}
+.off-level-high {
+  color: #e74c3c;
+}
+
+/* ── Divider ── */
+.off-divider {
+  height: 1px;
+  background: #e8e8e8;
+  margin: 4px 24px 12px;
+}
+
+/* ���─ Score SVG images ── */
+.off-scores {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 24px 16px;
+  background: #fff;
+  gap: 8px;
+}
+.off-score-img {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+.off-nova-img {
+  height: 80px;
+}
+
+/* ── Footer link ── */
+.off-footer-link {
+  display: block;
+  padding: 14px 18px;
+  background: #2d7d46;
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+}
+.off-footer-link:hover {
+  background: #245f37;
+}
+
+/* ── Loading ── */
+.off-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 24px;
+  color: #555;
+  font-size: 14px;
+}
+.off-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ddd;
+  border-top-color: #2d7d46;
+  border-radius: 50%;
+  animation: off-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes off-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Not found ── */
+.off-notfound {
+  padding: 20px 24px;
+  color: #555;
+  line-height: 1.6;
+  font-size: 14px;
+}
+.off-link {
+  color: #2d7d46;
+  text-decoration: underline;
+}
