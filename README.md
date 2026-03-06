@@ -3,8 +3,11 @@
 Currently only works with [Metro](metro.ca)
 
 ## Screenshots
+#### Found State
+<img width="1900" height="1028" alt="image" src="https://github.com/user-attachments/assets/f23fb511-4704-46e7-af88-e6c4d421b5f0" />
+#### Loading State
+<img width="1900" height="1028" alt="image" src="https://github.com/user-attachments/assets/6f380a34-42e9-4b51-9e69-63dd1540f74e" />
 
-%% Will be added on github %%
 
 ## Prototype working
 
