@@ -76,7 +76,7 @@ estore-extension/
       extract.ts     ← scrapes barcode + detects product page
       api.ts         ← fetches product from OFF API
       badge.ts       ← renders all badge states as DOM elements
-      badge.css      ← all badge styles (imported ?inline)
+      badge.css      ← all badge styles
   wxt.config.ts      ← WXT config, Metro host permissions only
 ```
 
