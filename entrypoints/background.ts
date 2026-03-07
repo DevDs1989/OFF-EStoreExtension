@@ -3,7 +3,7 @@ export default defineBackground(() => {
     if (message?.type !== "OFF_FETCH") return;
 
     const ean = message.ean as string;
-    const url = `https://ca.openfoodfacts.org/api/v0/product/${ean}.json`;
+    const url = `https://ca.openfoodfacts.org/api/v0/product/${ean}.json?countries_tags=en:canada`;
 
     fetch(url, {
       method: "GET",
