@@ -126,7 +126,7 @@ export function renderFull(resp: any, ean: string): HTMLElement {
     <a class="off-footer-link"
        href="https://ca.openfoodfacts.org/product/${ean}"
        target="_blank"
-       rel="noopener">View full product on Open Food Facts →</a>`;
+       rel="noopener">View more information on Open Food Facts →</a>`;
   return el;
 }
 
