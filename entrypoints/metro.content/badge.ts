@@ -37,13 +37,13 @@ function nutriscoreSrc(grade: string | null | undefined): string {
     grade && validNutriscores.includes(grade.toLowerCase())
       ? grade.toLowerCase()
       : "unknown";
-  return browser.runtime.getURL(`score/nutriscore-${key}-new-en.svg`);
+  return browser.runtime.getURL(`score/nutriscore-${key}-new-en.svg` as any);
 }
 
 function novaSrc(group: number | string | null | undefined): string {
   const n = Number(group);
   const key = [1, 2, 3, 4].includes(n) ? n : "unknown";
-  return browser.runtime.getURL(`score/nova-group-${key}.svg`);
+  return browser.runtime.getURL(`score/nova-group-${key}.svg` as any);
 }
 
 function greenScoreSrc(grade: string | null | undefined): string {
@@ -52,7 +52,7 @@ function greenScoreSrc(grade: string | null | undefined): string {
     grade && validGreenScores.includes(grade.toLowerCase())
       ? grade.toLowerCase()
       : "unknown";
-  return browser.runtime.getURL(`score/green-score-${key}.svg`);
+  return browser.runtime.getURL(`score/green-score-${key}.svg` as any);
 }
 
 // Header
@@ -61,7 +61,7 @@ const HEADER = `
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
   <div class="off-header">
     <img class="off-logo-img"
-         src="${browser.runtime.getURL("score/off-logo.svg")}"
+         src="${browser.runtime.getURL("score/off-logo.svg" as any)}"
          alt="Open Food Facts" />
   </div>`;
 
