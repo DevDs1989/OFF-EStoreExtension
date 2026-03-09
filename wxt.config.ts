@@ -10,7 +10,11 @@ export default defineConfig({
         matches: ["<all_urls>"],
       },
     ],
-    host_permissions: ["*://*.metro.ca/*", "*://ca.openfoodfacts.org/*"],
+    host_permissions: [
+      "*://*.metro.ca/*",
+      "*://ca.openfoodfacts.org/*",
+      "*://*.superc.ca/*",
+    ],
     permissions: ["storage"],
   },
 });

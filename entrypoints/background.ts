@@ -29,7 +29,10 @@ export default defineBackground(() => {
               sugars_100g: p.nutriments?.sugars_100g ?? null,
               fat_100g: p.nutriments?.fat_100g ?? null,
               sodium_100g: p.nutriments?.sodium_100g ?? null,
+              saturated_fat_100g: p.nutriments?.saturated_fat_100g ?? null,
             },
+            allergens_tags: p.allergens_tags ?? [],
+            additives_tags: p.additives_tags ?? [],
           });
         } else {
           sendResponse({ ok: false });
@@ -40,6 +43,6 @@ export default defineBackground(() => {
         sendResponse({ ok: false, error: String(err) });
       });
 
-    return true; // keep message channel open for async sendResponse
+    return true;
   });
 });
