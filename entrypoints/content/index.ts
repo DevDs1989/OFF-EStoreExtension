@@ -14,25 +14,43 @@ const DEFAULT_SETTINGS: UserSettings = {
   language: "auto",
 };
 
-async function fetchAndRender(
-  ean: string,
-  insertionPoint: HTMLElement, // reference element we insert BEFORE
-  settings: UserSettings,
-): Promise<void> {
-  // Loading State
-  const loading = renderLoading(ean);
+let injectedBarcode: string | null = null;
+let observer: MutationObserver | null = null;
+
+function cleanup(): void {
+  document
+    .querySelectorAll(".off-badge, .off-badge-loading")
+    .forEach((el) => el.remove());
+  injectedBarcode = null;
+}
+
+async function tryInject(): Promise<void> {
+  const adapter = getAdapter();
+  if (!adapter?.isProductPage()) return;
+
+  const productDetail = document.querySelector<HTMLElement>(
+    adapter.productDetailSelector,
+  );
+  if (!productDetail) return;
+
+  const barcode =
+    adapter.extractBarcode(productDetail) ?? (await adapter.interceptBarcode());
+
+  if (!barcode || injectedBarcode === barcode) return;
+
+  const insertionPoint = adapter.getInsertionPoint(productDetail);
+  if (!insertionPoint) return;
+
+  injectedBarcode = barcode;
+
+  const loading = renderLoading(barcode);
   insertionPoint.insertAdjacentElement("beforebegin", loading);
 
-  // Fetching State
-  const product = await fetchFromBackground(ean);
-
-  // Removes loading when fetched
+  const product = await fetchFromBackground(barcode);
   loading.remove();
 
-  // BuilderPattern to build the badge
-  // TODO: add user config functionality
   const badge = product
-    ? new BadgeBuilder(product, settings)
+    ? new BadgeBuilder(product, DEFAULT_SETTINGS)
         .withHeader()
         .withNutrients()
         .withAllergens()
@@ -40,37 +58,9 @@ async function fetchAndRender(
         .withAdditives()
         .withFooter()
         .build()
-    : renderNotFound(ean);
+    : renderNotFound(barcode);
 
   insertionPoint.insertAdjacentElement("beforebegin", badge);
-}
-
-async function detectAndInject(settings: UserSettings): Promise<void> {
-  const adapter = getAdapter();
-  if (!adapter) return;
-
-  if (!adapter.isProductPage()) return;
-
-  const base = document.querySelector<HTMLElement>(
-    adapter.productDetailSelector,
-  );
-  if (!base) return;
-
-  // Avoid duplicate injection
-  if (base.querySelector(".off-badge")) return;
-
-  let barcode = adapter.extractBarcode(base);
-
-  if (!barcode) {
-    barcode = await adapter.interceptBarcode();
-  }
-
-  if (!barcode) return;
-
-  const insertionPoint = adapter.getInsertionPoint(base);
-  if (!insertionPoint) return;
-
-  fetchAndRender(barcode, insertionPoint, settings);
 }
 
 export default defineContentScript({
@@ -78,7 +68,24 @@ export default defineContentScript({
   runAt: "document_idle",
   cssInjectionMode: "manifest",
 
-  main() {
-    setTimeout(() => detectAndInject(DEFAULT_SETTINGS), 1500);
+  main(ctx) {
+    const adapter = getAdapter();
+    if (!adapter) return;
+
+    ctx.addEventListener(window, "wxt:locationchange", () => {
+      cleanup();
+      tryInject();
+    });
+
+    observer = new MutationObserver(() => tryInject());
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    ctx.onInvalidated(() => {
+      observer?.disconnect();
+      observer = null;
+      cleanup();
+    });
+
+    tryInject();
   },
 });

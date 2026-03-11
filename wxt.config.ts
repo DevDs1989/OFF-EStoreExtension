@@ -6,7 +6,7 @@ export default defineConfig({
     version: "0.1.0",
     web_accessible_resources: [
       {
-        resources: ["score/*.svg", "icon/*.png", "utils/loblawsIntercept.js"],
+        resources: ["score/*.svg", "icon/*.png"],
         matches: ["<all_urls>"],
       },
     ],
@@ -16,7 +16,6 @@ export default defineConfig({
       "*://*.superc.ca/*",
       "*://*.loblaws.ca/*",
     ],
-    runAt: "document_start",
     permissions: ["storage"],
   },
 });

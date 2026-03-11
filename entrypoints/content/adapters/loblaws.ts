@@ -11,9 +11,8 @@ export class LoblawsAdapter extends SiteAdapter {
 
   getInsertionPoint(_base: HTMLElement): HTMLElement | null {
     return (
-      document.querySelector<HTMLElement>(
-        "[class*='product-details-deals-badge']",
-      ) ?? document.querySelector<HTMLElement>("h1")
+      document.querySelector<HTMLElement>("[class*=comparison-price-list") ??
+      document.querySelector<HTMLElement>("h1")
     );
   }
 
@@ -22,7 +21,7 @@ export class LoblawsAdapter extends SiteAdapter {
       const timeout = setTimeout(() => {
         window.removeEventListener("message", handler);
         resolve(null);
-      }, 5000);
+      }, 15_000); // Loblaws SPA can take a while to render + fetch
 
       const self = this;
 
@@ -34,20 +33,23 @@ export class LoblawsAdapter extends SiteAdapter {
         window.removeEventListener("message", handler);
 
         const ean = self.normaliseBarcode(event.data.payload.gtin);
-        alert(`GTIN intercepted: ${ean}`);
+        console.log("LoblawsAdapter: Intercepted GTIN", ean);
         resolve(ean);
       }
 
       window.addEventListener("message", handler);
 
-      const script = document.createElement("script");
-      script.src = browser.runtime.getURL("utils/loblawsIntercept.js" as any);
-      document.documentElement.appendChild(script);
-      script.remove();
+      // No script injection needed!
+      // loblaws-hook.content.ts (world: "MAIN") is already
+      // intercepting fetch/XHR at document_start.
     });
   }
 
   get productDetailSelector(): string {
-    return "[class*='product-details-page-details__visibility-sensor']";
+    // The old selector was too specific and didn't match.
+    // On Loblaws' SPA, the root app container is #root —
+    // but we need a product-specific element. Use a broad
+    // attribute selector that survives class name hashing.
+    return "[class*='product-details-page']";
   }
 }

@@ -143,7 +143,6 @@ Response: { status: 1, product: { ... } }   // status 0 = not found
 ## Roadmap
 
 - Walmart Canada, Food Basics, Maxi, Loblaws adapters
-- Searchalicious attribute matching for sites without barcodes
 - IndexedDB caching (products + matches)
 - Popup UI — score toggles, allergen flags, EN/FR language preference
 - Onboarding page

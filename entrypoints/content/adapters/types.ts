@@ -20,8 +20,17 @@ export abstract class SiteAdapter {
   /** Returns the CSS selector for the product detail container */
   abstract get productDetailSelector(): string;
 
-  /** Normalises UPC-A (12 digits) → EAN-13 by prepending '0' */
+  /** Normalises GTIN and UPC codes to EAN-13 by prepending a leading zero if necessary */
   protected normaliseBarcode(raw: string): string {
-    return raw.length === 12 ? "0" + raw : raw;
+    if (raw.length === 12 && /^\d{12}$/.test(raw)) {
+      return "0" + raw;
+    }
+    if (raw.length === 13 && /^\d{13}$/.test(raw)) {
+      return raw;
+    }
+    if (raw.length === 14 && /^\d{14}$/.test(raw)) {
+      return raw.substring(1);
+    }
+    return raw; // return as-is if it doesn't match expected formats
   }
 }

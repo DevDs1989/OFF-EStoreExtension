@@ -24,4 +24,8 @@ export class SuperCAdapter extends SiteAdapter {
       null
     );
   }
+
+  get productDetailSelector(): string {
+    return "div.pdpDetailsContainer";
+  }
 }
