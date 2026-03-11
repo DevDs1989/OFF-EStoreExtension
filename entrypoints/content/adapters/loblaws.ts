@@ -41,7 +41,7 @@ export class LoblawsAdapter extends SiteAdapter {
       window.addEventListener("message", handler);
 
       const script = document.createElement("script");
-      script.src = browser.runtime.getURL("utils/loblawsInterceptor.js" as any);
+      script.src = browser.runtime.getURL("utils/loblawsIntercept.js" as any);
       document.documentElement.appendChild(script);
       script.remove();
     });

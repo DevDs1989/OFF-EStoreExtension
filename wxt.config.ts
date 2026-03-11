@@ -16,6 +16,7 @@ export default defineConfig({
       "*://*.superc.ca/*",
       "*://*.loblaws.ca/*",
     ],
+    runAt: "document_start",
     permissions: ["storage"],
   },
 });
