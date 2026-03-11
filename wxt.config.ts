@@ -6,7 +6,7 @@ export default defineConfig({
     version: "0.1.0",
     web_accessible_resources: [
       {
-        resources: ["score/*.svg", "icon/*.png"],
+        resources: ["score/*.svg", "icon/*.png", "utils/loblawsIntercept.js"],
         matches: ["<all_urls>"],
       },
     ],
@@ -14,6 +14,7 @@ export default defineConfig({
       "*://*.metro.ca/*",
       "*://ca.openfoodfacts.org/*",
       "*://*.superc.ca/*",
+      "*://*.loblaws.ca/*",
     ],
     permissions: ["storage"],
   },

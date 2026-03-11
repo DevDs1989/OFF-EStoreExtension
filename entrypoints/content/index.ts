@@ -45,7 +45,7 @@ async function fetchAndRender(
   insertionPoint.insertAdjacentElement("beforebegin", badge);
 }
 
-function detectAndInject(settings: UserSettings): void {
+async function detectAndInject(settings: UserSettings): Promise<void> {
   const adapter = getAdapter();
   if (!adapter) return;
 
@@ -59,7 +59,12 @@ function detectAndInject(settings: UserSettings): void {
   // Avoid duplicate injection
   if (base.querySelector(".off-badge")) return;
 
-  const barcode = adapter.extractBarcode(base);
+  let barcode = adapter.extractBarcode(base);
+
+  if (!barcode) {
+    barcode = await adapter.interceptBarcode();
+  }
+
   if (!barcode) return;
 
   const insertionPoint = adapter.getInsertionPoint(base);
@@ -69,7 +74,7 @@ function detectAndInject(settings: UserSettings): void {
 }
 
 export default defineContentScript({
-  matches: ["*://*.metro.ca/*", "*://*.superc.ca/*"],
+  matches: ["*://*.metro.ca/*", "*://*.superc.ca/*", "*://*.loblaws.ca/*"],
   runAt: "document_idle",
   cssInjectionMode: "manifest",
 
