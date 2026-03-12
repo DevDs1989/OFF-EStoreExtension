@@ -17,18 +17,17 @@ export class MetroAdapter extends SiteAdapter {
   }
 
   getInsertionPoint(base: HTMLElement): HTMLElement | null {
-    const addToCart =
-      base.querySelector<HTMLElement>(".pi-item-actions") ??
-      base.querySelector<HTMLElement>('[class*="add-to-cart"]') ??
-      base.querySelector<HTMLElement>('[class*="addToCart"]');
-
-    if (addToCart) return addToCart;
-
     const title =
       base.querySelector<HTMLElement>("h1.pi--title") ??
-      base.querySelector<HTMLElement>("h1");
+      base.querySelector<HTMLElement>("h1") ??
+      null;
 
-    return title?.parentElement ?? base;
+    if (!title?.parentElement) return base;
+
+    title.parentElement.style.cssText =
+      "display:flex; align-items:center; gap:10px;";
+
+    return title;
   }
 
   get productCardSelector(): string {

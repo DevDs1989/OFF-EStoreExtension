@@ -3,18 +3,42 @@ export default defineContentScript({
   runAt: "document_start",
   world: "MAIN",
   main() {
-    const sku = window.location.pathname.match(/\/p\/([^/?]+)/)?.[1];
-    if (!sku) return;
+    // SPA navigation detection
+    const ogPushState = history.pushState.bind(history);
+    const ogReplaceState = history.replaceState.bind(history);
 
+    function onNavigate() {
+      done = false; // reset so next product page can intercept
+      window.dispatchEvent(new CustomEvent("off:locationchange"));
+    }
+
+    history.pushState = (...args) => {
+      ogPushState(...args);
+      onNavigate();
+    };
+    history.replaceState = (...args) => {
+      ogReplaceState(...args);
+      onNavigate();
+    };
+    window.addEventListener("popstate", onNavigate);
+
+    // GTIN interception
     let done = false;
 
     const handleResponse = (data: any) => {
       if (done) return;
       if (!data || typeof data !== "object") return;
-      const code = data.code ?? data.productCode;
-      if (code !== sku) return;
+
       const gtin = data.gtin ?? data?.variants?.[0]?.gtin;
       if (!gtin) return;
+
+      // Dynamically read the current SKU at intercept time, not at script start
+      const sku = window.location.pathname.match(/\/p\/([^/?]+)/)?.[1];
+      if (!sku) return;
+
+      const code = data.code ?? data.productCode;
+      if (code !== sku) return;
+
       done = true;
       window.postMessage({ type: "GTIN_FOUND", payload: { sku, gtin } });
     };

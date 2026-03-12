@@ -11,27 +11,30 @@ export class LoblawsAdapter extends SiteAdapter {
 
   getInsertionPoint(_base: HTMLElement): HTMLElement | null {
     return (
-      document.querySelector<HTMLElement>("[class*=comparison-price-list") ??
+      document.querySelector<HTMLElement>("[class*=comparison-price-list]") ??
       document.querySelector<HTMLElement>("h1")
     );
   }
 
-  interceptBarcode(): Promise<string | null> {
+  interceptBarcode(signal?: AbortSignal): Promise<string | null> {
     return new Promise((resolve) => {
+      if (signal?.aborted) {
+        resolve(null);
+        return;
+      }
+
       const timeout = setTimeout(() => {
         window.removeEventListener("message", handler);
         resolve(null);
-      }, 15_000); // Loblaws SPA can take a while to render + fetch
+      }, 15_000);
 
       const self = this;
 
       function handler(event: MessageEvent) {
         if (event.source !== window) return;
         if (event.data?.type !== "GTIN_FOUND") return;
-
         clearTimeout(timeout);
         window.removeEventListener("message", handler);
-
         const ean = self.normaliseBarcode(event.data.payload.gtin);
         console.log("LoblawsAdapter: Intercepted GTIN", ean);
         resolve(ean);
@@ -39,17 +42,16 @@ export class LoblawsAdapter extends SiteAdapter {
 
       window.addEventListener("message", handler);
 
-      // No script injection needed!
-      // loblaws-hook.content.ts (world: "MAIN") is already
-      // intercepting fetch/XHR at document_start.
+      // On page change: cancel timeout, remove listener, resolve null
+      signal?.addEventListener("abort", () => {
+        clearTimeout(timeout);
+        window.removeEventListener("message", handler);
+        resolve(null);
+      });
     });
   }
 
   get productDetailSelector(): string {
-    // The old selector was too specific and didn't match.
-    // On Loblaws' SPA, the root app container is #root —
-    // but we need a product-specific element. Use a broad
-    // attribute selector that survives class name hashing.
     return "[class*='product-details-page']";
   }
 }

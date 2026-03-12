@@ -21,7 +21,7 @@ export abstract class SiteAdapter {
   abstract get productDetailSelector(): string;
 
   /** Normalises GTIN and UPC codes to EAN-13 by prepending a leading zero if necessary */
-  protected normaliseBarcode(raw: string): string {
+  public normaliseBarcode(raw: string): string {
     if (raw.length === 12 && /^\d{12}$/.test(raw)) {
       return "0" + raw;
     }
