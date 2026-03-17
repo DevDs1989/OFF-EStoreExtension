@@ -11,22 +11,22 @@ Browser extension that overlays real-time nutritional data from [Open Food Facts
 
 ## Screenshots
 
-#### Found State
+#### Closed State
+<img width="916" height="459" alt="image" src="https://github.com/user-attachments/assets/817cc6f1-829c-4d1a-8597-d2a863649ce5" />
 
-<img width="1900" height="1028" alt="image" src="https://github.com/user-attachments/assets/f23fb511-4704-46e7-af88-e6c4d421b5f0" />
+#### Open State
+<img width="915" height="459" alt="image" src="https://github.com/user-attachments/assets/bd5d310d-4e6b-4c1a-aee4-09f5ee73ca67" />
 
-#### Loading State
 
-<img width="1900" height="1028" alt="image" src="https://github.com/user-attachments/assets/6f380a34-42e9-4b51-9e69-63dd1540f74e" />
 
 ## How It Works
 
 When visiting a product page, the extension:
 
 1. Detects the product page via the registered `SiteAdapter`
-2. Extracts the EAN barcode from the URL
+2. Extracts the EAN barcode depending on the strategy
 3. Fetches product data from the OFF Canada API
-4. Mounts a Shadow DOM badge next to the product title
+4. Mounts a Shadow DOM UI in the bottom of the page.
 
 ### Badge Fields
 
@@ -51,17 +51,18 @@ When visiting a product page, the extension:
 
 ```mermaid
 flowchart TD
-    A([User visits a product page]) --> B{SiteAdapter.isProductPage?}
-    B -- No --> Z([Extension exits silently])
-    B -- Yes --> C[SiteAdapter.extractBarcode]
-    C --> D[Mount Shadow DOM via createShadowRootUi]
-    D --> E[BadgeBuilder → renderLoading]
-    E --> F{Barcode found?}
-    F -- No --> G[BadgeBuilder → renderNotFound]
-    F -- Yes --> H[fetchProduct from OFF Canada API]
-    H --> I{Product returned?}
-    I -- Yes --> J[BadgeBuilder → renderFull]
-    I -- No --> K[BadgeBuilder → renderNotFound]
+    A[Product Page] --> B[Content Script]
+    B --> C{Adapter}
+    C -->|DOM barcode| D[Metro / Super C / Food Basics]
+    C -->|JSON-LD| E[Walmart]
+    C -->|Network Hooking| F[Loblaws / Maxi]
+    D & E & F --> G[fetchProduct]
+    G --> H{IndexedDB Cache}
+    H -->|Hit| I[BadgeBuilder]
+    H -->|Miss| J[OFF SDK]
+    J --> H
+    J --> I
+    I --> K[Floating Bar]
 ```
 
 ## Tech Stack
@@ -72,11 +73,12 @@ flowchart TD
 | TypeScript                     | Language throughout                       |
 | Vanilla DOM + Shadow DOM       | UI with full style isolation              |
 | CSS (`cssInjectionMode: 'ui'`) | Scoped styles via `createShadowRootUi`    |
-| OFF Canada REST API            | Product data source                       |
+| OFF Canada REST API            | Product data source (Will migrate to NodeJS SDK                      |
+| IndexedDB | Caching of product data |
 
 ## Architecture
 
-**Site Adapter pattern** — each supported site implements a `SiteAdapter` with `isProductPage()`, `extractBarcode()`, and `getInsertionPoint()`. Adding a new site means one new adapter file.
+**Site Adapter pattern** — each supported site implements a `SiteAdapter` with `isProductPage()`, `extractBarcode()`,. Adding a new site means one new adapter file.
 
 **BadgeBuilder pattern** — badge construction is handled by a `BadgeBuilder` class that assembles sections (`withNutrients()`, `withScores()`, `withAllergens()`, etc.) before calling `.build()`.
 
